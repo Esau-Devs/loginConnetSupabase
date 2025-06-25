@@ -1,0 +1,47 @@
+---
+import { Google, Githud } from "../icons/AllIcons.jsx";
+---
+
+<div class="mt-4 w-full">
+  <div>
+    {/* Línea con texto en medio */}
+    <div class="flex items-center w-full my-4">
+      <div
+        class="flex-grow h-px bg-gradient-to-r from-neutral-300 via-neutral-400 to-neutral-300"
+      >
+      </div>
+
+      <p class="px-3 font-normal text-sm">O Continuar con</p>
+      <div
+        class="flex-grow h-px bg-gradient-to-r from-neutral-300 via-neutral-400 to-neutral-300"
+      >
+      </div>
+    </div>
+
+    {/* Botones de login */}
+    <div class="flex justify-center mt-4 gap-3">
+      <form
+        action="/api/auth/signin"
+        method="POST"
+        class="flex justify-center mt-4 gap-3"
+      >
+        <button
+          type="submit"
+          name="provider"
+          value="google"
+          class="cursor-pointer"
+        >
+          <Google className="w-11 h-11 rounded-full" />
+        </button>
+        <button
+          type="submit"
+          name="provider"
+          value="github"
+          class="cursor-pointer"
+        >
+          <Githud className="w-11 h-11 rounded-full" />
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

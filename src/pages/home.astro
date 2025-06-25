@@ -1,0 +1,74 @@
+---
+import "../styles/global.css";
+import { User, Gmail } from "../icons/AllIcons.tsx";
+
+import { supabase } from "../lib/supabase";
+
+const accessToken = Astro.cookies.get("sb-access-token");
+const refreshToken = Astro.cookies.get("sb-refresh-token");
+
+if (!accessToken || !refreshToken) {
+  return Astro.redirect("/signin");
+}
+
+let session;
+try {
+  session = await supabase.auth.setSession({
+    refresh_token: refreshToken.value,
+    access_token: accessToken.value,
+  });
+  if (session.error) {
+    Astro.cookies.delete("sb-access-token", {
+      path: "/",
+    });
+    Astro.cookies.delete("sb-refresh-token", {
+      path: "/",
+    });
+    return Astro.redirect("/signin");
+  }
+} catch (error) {
+  Astro.cookies.delete("sb-access-token", {
+    path: "/",
+  });
+  Astro.cookies.delete("sb-refresh-token", {
+    path: "/",
+  });
+  return Astro.redirect("/signin");
+}
+
+const email = session.data.user?.email;
+const name = session.data.user?.user_metadata?.full_name;
+const avatar = session.data.user?.user_metadata?.avatar_url;
+---
+
+<div
+  class="container mx-auto flex justify-center items-center text-center rounded-2xl min-h-screen"
+>
+  <div
+    class="flex flex-col justify-center bg-white shadow-2xl rounded-2xl p-8 w-full h-[500px] max-w-sm mx-auto"
+  >
+    <!-- Icono del usuario centrado -->
+    <div class="flex justify-center mb-4">
+      <img src={avatar} alt="" class="rounded-full" />
+    </div>
+
+    <!-- Nombre del usuario -->
+    <p class="text-xl font-semibold text-center mb-2">{name}</p>
+
+    <!-- Correo electrónico con ícono -->
+    <div class="flex items-center justify-center gap-2 text-gray-600 mb-6">
+      <Gmail className="w-5 h-5" />
+      <span>{email}</span>
+    </div>
+
+    <!-- Botón de cerrar sesión -->
+    <form action="api/auth/signout">
+      <button
+        type="submit"
+        class="bg-blue-600 hover:bg-blue-600/80 text-white w-full py-3 rounded-xl cursor-pointer transition"
+      >
+        Cerrar sesi&oacute;n
+      </button>
+    </form>
+  </div>
+</div>
