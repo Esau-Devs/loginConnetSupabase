@@ -1,21 +1,13 @@
-# Astro Starter Kit: Basics
+# Astro con Supabase
 
-```sh
-npm create astro@latest -- --template basics
-```
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
-
-> 🧑‍🚀 Login conectado con auntentificacion de google y githud
+##  Login conectado con auntentificacion de google y githud
 ![image](https://github.com/user-attachments/assets/7b0ffc2f-dc9e-4910-b854-9c0b2ca48d03)
 
 ## 🚀 Project Structure
 
 Inside of your Astro project, you'll see the following folders and files:
 
-```text
+```js
 /
 ├── public/
 │   └── favicon.svg
@@ -30,18 +22,62 @@ Inside of your Astro project, you'll see the following folders and files:
 To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
 
 ## 🧞 Commands
+1. Download the project from `GitHub` and in the terminal 
+```js
+npm install
+```
+2. create environment Variables .env important create private .env.local
+```
+SUPABASE_URL=YOUR_SUPABASE_URL
+SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+```
+3. Create new project in Supabase
 
-All commands are run from the root of the project, from a terminal:
+> NOTE: replace YOUR_SUPABASE_URL and YOUR_SUPABASE_ANON_KEY in .env
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+4. install supabase in terminal with your project
+```js
+npm install @supabase/supabase-js
+```
+5. Add this code in src/env.d.ts
+```js
+interface ImportMetaEnv {
+  readonly SUPABASE_URL: string
+  readonly SUPABASE_ANON_KEY: string
+}
 
-## 👀 Want to learn more?
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+```
+6. Create new folder /lib in /src and file supabase.ts src/lib/supabase.ts
+```js
+import { createClient } from "@supabase/supabase-js";
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+export const supabase = createClient(
+  import.meta.env.SUPABASE_URL,
+  import.meta.env.SUPABASE_ANON_KEY,
+);
+```
+
+7. add this is code in buttons for login and exit
+```js
+  <form action="/api/auth/login" method="post">
+
+  <form action="/api/auth/logout">
+```
+
+8. Integrates Name and Email, Picture
+```js
+const name = data?.user?.user_metadata?.full_name; 
+const picture = data?.user?.user_metadata?.avatar_url;
+```
+
+> Agrega esto en `astro.config.mjs`:
+
+```js
+export default defineConfig({
+  output: 'server',
+});
+```
+
